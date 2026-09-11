@@ -1,0 +1,57 @@
+{
+  "source": "synthetic",
+  "description": "Bay of Bengal environmental data for demo scenario 2024-01-15",
+  "scenario_date": "2024-01-15",
+  "wind_events": [
+    {
+      "id": "WE_001",
+      "description": "Moderate north-easterly weather system",
+      "start": "2024-01-15T10:00:00",
+      "end": "2024-01-15T13:30:00",
+      "lat_min": 10.0,
+      "lat_max": 17.0,
+      "lon_min": 83.0,
+      "lon_max": 93.0,
+      "speed_knots": 27.0,
+      "direction_deg": 45,
+      "beaufort": 6
+    },
+    {
+      "id": "WE_002",
+      "description": "Light breeze — standard conditions",
+      "start": "2024-01-15T06:00:00",
+      "end": "2024-01-15T10:00:00",
+      "lat_min": 5.0,
+      "lat_max": 22.0,
+      "lon_min": 80.0,
+      "lon_max": 100.0,
+      "speed_knots": 8.0,
+      "direction_deg": 200,
+      "beaufort": 3
+    },
+    {
+      "id": "WE_003",
+      "description": "Moderate conditions — afternoon",
+      "start": "2024-01-15T13:30:00",
+      "end": "2024-01-15T22:00:00",
+      "lat_min": 5.0,
+      "lat_max": 22.0,
+      "lon_min": 80.0,
+      "lon_max": 100.0,
+      "speed_knots": 12.0,
+      "direction_deg": 215,
+      "beaufort": 4
+    }
+  ],
+  "ocean_currents": [
+    {
+      "description": "Bay of Bengal typical surface current",
+      "lat": 13.0,
+      "lon": 88.0,
+      "u_knots": 0.8,
+      "v_knots": -0.3,
+      "speed_knots": 0.85,
+      "direction_deg": 200
+    }
+  ]
+}

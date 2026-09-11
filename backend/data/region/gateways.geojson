@@ -1,0 +1,69 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "A",
+        "name": "Gateway Alpha — Western Boundary",
+        "color": "#00ff88",
+        "description": "Western entry/exit — 80°E meridian"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [80.0, 5.0],
+          [80.0, 22.0]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "B",
+        "name": "Gateway Bravo — Northern Boundary",
+        "color": "#00d4ff",
+        "description": "Northern entry/exit — 22°N parallel"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [80.0, 22.0],
+          [100.0, 22.0]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "C",
+        "name": "Gateway Charlie — Southern Boundary",
+        "color": "#ffb800",
+        "description": "Southern entry/exit — 5°N parallel"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [80.0, 5.0],
+          [100.0, 5.0]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "D",
+        "name": "Gateway Delta — Eastern Boundary",
+        "color": "#ff6b35",
+        "description": "Eastern entry/exit — 100°E meridian"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [100.0, 5.0],
+          [100.0, 22.0]
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "BOB_DEMO",
+        "name": "Bay of Bengal Prototype Monitoring Region",
+        "description": "Occuris SIH 2026 demo monitoring polygon"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [80.0, 5.0],
+            [100.0, 5.0],
+            [100.0, 22.0],
+            [80.0, 22.0],
+            [80.0, 5.0]
+          ]
+        ]
+      }
+    }
+  ]
+}
