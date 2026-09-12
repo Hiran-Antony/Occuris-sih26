@@ -30,7 +30,20 @@ export const dashboardApi = {
 };
 
 export const forensicsApi = {
-  getSarImages: () => api.get('/api/forensics/sar-images').then(r => r.data),
-  processSarImage: (filename: string) => api.post(`/api/forensics/process-image?filename=${filename}`).then(r => r.data),
-  getIncidents: () => api.get('/api/forensics/incidents').then(r => r.data),
+  getSarImages: async () => {
+    const res = await api.get('/api/forensics/sar-images');
+    return res.data;
+  },
+  processSarImage: async (filename: string) => {
+    const res = await api.post(`/api/forensics/process-image?filename=${filename}`);
+    return res.data;
+  },
+  getIncidents: async () => {
+    const res = await api.get('/api/forensics/incidents');
+    return res.data;
+  },
+  getSuspects: async (incidentId: number) => {
+    const res = await api.get(`/api/forensics/incidents/${incidentId}/suspects`);
+    return res.data;
+  }
 };

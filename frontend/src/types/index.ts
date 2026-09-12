@@ -8,6 +8,59 @@ export interface Vessel {
   unexplained_event_count: number;
 }
 
+export interface SpillIncident {
+  id: number;
+  detected_at: string;
+  acquisition_time: string;
+  sar_confidence: number;
+  look_alike_passed: boolean;
+  sar_image_path?: string;
+  mask_path?: string;
+  status: string;
+  look_alike_checks: {
+    wind_check: boolean;
+    shape_check: boolean;
+    size_check: boolean;
+  };
+  geometry: {
+    centroid_lat: number;
+    centroid_lon: number;
+    area_km2: number;
+    length_km: number;
+    width_km: number;
+    orientation_deg: number;
+    pixel_count: number;
+  };
+  origin: {
+    lat: number;
+    lon: number;
+    radius_km: number;
+    release_start: string;
+    release_end: string;
+  };
+  spillsplit: {
+    hypothesis: string;
+    source_count: number;
+    delta_bic: number;
+    zones: number[][];
+  };
+  forward_drift: {
+    t1h: number[][];
+    t3h: number[][];
+    t6h: number[][];
+  };
+}
+
+export interface Suspect {
+  mmsi: string;
+  vessel_name: string;
+  min_distance_km: number;
+  match_score: number;
+  priority: string;
+  reasons: string[];
+  event_count: number;
+}
+
 export interface AISPosition {
   id: number;
   mmsi: string;

@@ -37,3 +37,15 @@ def get_incident(incident_id: int, db: Session = Depends(get_db)):
     if not incident:
         raise HTTPException(status_code=404, detail="Incident not found")
     return incident.to_dict()
+
+from app.algorithms.correlation import run_memory_rewind
+
+@router.get("/incidents/{incident_id}/suspects")
+def get_incident_suspects(incident_id: int, db: Session = Depends(get_db)):
+    """Run Memory Rewind and return ranked suspects for the spill."""
+    incident = db.query(SpillIncident).filter(SpillIncident.id == incident_id).first()
+    if not incident:
+        raise HTTPException(status_code=404, detail="Incident not found")
+        
+    suspects = run_memory_rewind(incident, db)
+    return suspects

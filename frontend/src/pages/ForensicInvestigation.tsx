@@ -8,6 +8,8 @@ export const ForensicInvestigation: React.FC = () => {
   const [incidents, setIncidents] = useState<any[]>([]);
   const [processing, setProcessing] = useState<string | null>(null);
   const [selectedIncident, setSelectedIncident] = useState<any | null>(null);
+  const [suspects, setSuspects] = useState<any[]>([]);
+  const [loadingSuspects, setLoadingSuspects] = useState<boolean>(false);
 
   useEffect(() => {
     fetchData();
@@ -31,7 +33,7 @@ export const ForensicInvestigation: React.FC = () => {
     try {
       const res = await forensicsApi.processSarImage(filename);
       setIncidents([res.incident, ...incidents]);
-      setSelectedIncident(res.incident);
+      handleSelectIncident(res.incident);
     } catch (e) {
       console.error(e);
       alert('Failed to process SAR image.');
@@ -42,6 +44,20 @@ export const ForensicInvestigation: React.FC = () => {
 
   const getIncidentForImage = (filename: string) => {
     return incidents.find((inc) => inc.sar_image_path?.endsWith(filename));
+  };
+
+  const handleSelectIncident = async (inc: any) => {
+    setSelectedIncident(inc);
+    setLoadingSuspects(true);
+    try {
+      const data = await forensicsApi.getSuspects(inc.id);
+      setSuspects(data);
+    } catch (e) {
+      console.error(e);
+      setSuspects([]);
+    } finally {
+      setLoadingSuspects(false);
+    }
   };
 
   return (
@@ -99,7 +115,7 @@ export const ForensicInvestigation: React.FC = () => {
                       )}
                       {inc && (
                         <button
-                          onClick={() => setSelectedIncident(inc)}
+                          onClick={() => handleSelectIncident(inc)}
                           style={{
                             width: '100%', padding: '8px', background: 'rgba(255,255,255,0.1)', color: 'var(--text-primary)', border: '1px solid var(--border)', borderRadius: '4px', cursor: 'pointer', fontSize: '12px', transition: 'background 0.2s'
                           }}
@@ -197,59 +213,115 @@ export const ForensicInvestigation: React.FC = () => {
                 </div>
               </div>
 
-              {/* Bottom row: Drift Simulation Map */}
-              <div className="glass-panel" style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-                  <h3 style={{ fontSize: '16px', color: 'var(--text-primary)' }}>Drift Simulation (Backtracking & Forward)</h3>
-                  <p style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
-                    Estimated origin window: <span style={{ color: 'var(--text-primary)', fontWeight: 'bold' }}>{new Date(selectedIncident.origin.release_start).toLocaleTimeString()} - {new Date(selectedIncident.origin.release_end).toLocaleTimeString()}</span>
-                  </p>
+              {/* Bottom row: Drift Simulation Map and Suspects */}
+              <div style={{ display: 'flex', gap: '20px', flex: 1, minHeight: '350px' }}>
+                <div className="glass-panel" style={{ padding: '20px', flex: 2, display: 'flex', flexDirection: 'column' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+                    <h3 style={{ fontSize: '16px', color: 'var(--text-primary)' }}>Drift Simulation (Backtracking & Forward)</h3>
+                    <p style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+                      Estimated origin window: <span style={{ color: 'var(--text-primary)', fontWeight: 'bold' }}>{new Date(selectedIncident.origin.release_start).toLocaleTimeString()} - {new Date(selectedIncident.origin.release_end).toLocaleTimeString()}</span>
+                    </p>
+                  </div>
+                  
+                  <div style={{ flex: 1, borderRadius: '8px', border: '1px solid var(--border)', overflow: 'hidden' }}>
+                    <MapContainer 
+                      center={[selectedIncident.geometry.centroid_lat || 13.15, selectedIncident.geometry.centroid_lon || 86.20]} 
+                      zoom={10} 
+                      style={{ height: '100%', width: '100%', background: '#020c18' }}
+                    >
+                      <TileLayer 
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" 
+                        className="dark-map-tiles"
+                      />
+                      
+                      {/* Centroid */}
+                      <CircleMarker 
+                        center={[selectedIncident.geometry.centroid_lat, selectedIncident.geometry.centroid_lon]} 
+                        radius={6} color="#00d4ff" fillColor="#00d4ff" fillOpacity={1}
+                      />
+
+                      {/* Forward Drift Polygons */}
+                      {selectedIncident.forward_drift.t1h?.map((poly: any, i: number) => (
+                        <Polygon key={`1h-${i}`} positions={poly.map((p: any) => [p[1], p[0]])} color="#ffb800" weight={2} fillOpacity={0.1} dashArray="5,5" />
+                      ))}
+                      {selectedIncident.forward_drift.t3h?.map((poly: any, i: number) => (
+                        <Polygon key={`3h-${i}`} positions={poly.map((p: any) => [p[1], p[0]])} color="#ff6b35" weight={2} fillOpacity={0.1} dashArray="5,5" />
+                      ))}
+                      {selectedIncident.forward_drift.t6h?.map((poly: any, i: number) => (
+                        <Polygon key={`6h-${i}`} positions={poly.map((p: any) => [p[1], p[0]])} color="#ff3366" weight={2} fillOpacity={0.1} dashArray="5,5" />
+                      ))}
+
+                      {/* Backward Drift Particles */}
+                      {selectedIncident.origin.backward_particles && (
+                        <Polyline 
+                          positions={JSON.parse(selectedIncident.origin.backward_particles).map((p: any) => [p[1], p[0]])} 
+                          color="#c77dff" weight={2} opacity={0.6} dashArray="4,4"
+                        />
+                      )}
+
+                      {/* Origin Zone */}
+                      {selectedIncident.origin.lat && (
+                        <CircleMarker 
+                          center={[selectedIncident.origin.lat, selectedIncident.origin.lon]} 
+                          radius={20} color="#c77dff" fillColor="#c77dff" fillOpacity={0.2} weight={2}
+                        />
+                      )}
+                    </MapContainer>
+                  </div>
                 </div>
                 
-                <div style={{ flex: 1, minHeight: '300px', borderRadius: '8px', border: '1px solid var(--border)', overflow: 'hidden' }}>
-                  <MapContainer 
-                    center={[selectedIncident.geometry.centroid_lat || 13.15, selectedIncident.geometry.centroid_lon || 86.20]} 
-                    zoom={10} 
-                    style={{ height: '100%', width: '100%', background: '#020c18' }}
-                  >
-                    <TileLayer 
-                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" 
-                      className="dark-map-tiles"
-                    />
-                    
-                    {/* Centroid */}
-                    <CircleMarker 
-                      center={[selectedIncident.geometry.centroid_lat, selectedIncident.geometry.centroid_lon]} 
-                      radius={6} color="#00d4ff" fillColor="#00d4ff" fillOpacity={1}
-                    />
-
-                    {/* Forward Drift Polygons */}
-                    {selectedIncident.forward_drift.t1h?.map((poly: any, i: number) => (
-                      <Polygon key={`1h-${i}`} positions={poly.map((p: any) => [p[1], p[0]])} color="#ffb800" weight={2} fillOpacity={0.1} dashArray="5,5" />
-                    ))}
-                    {selectedIncident.forward_drift.t3h?.map((poly: any, i: number) => (
-                      <Polygon key={`3h-${i}`} positions={poly.map((p: any) => [p[1], p[0]])} color="#ff6b35" weight={2} fillOpacity={0.1} dashArray="5,5" />
-                    ))}
-                    {selectedIncident.forward_drift.t6h?.map((poly: any, i: number) => (
-                      <Polygon key={`6h-${i}`} positions={poly.map((p: any) => [p[1], p[0]])} color="#ff3366" weight={2} fillOpacity={0.1} dashArray="5,5" />
-                    ))}
-
-                    {/* Backward Drift Particles */}
-                    {selectedIncident.origin.backward_particles && (
-                      <Polyline 
-                        positions={JSON.parse(selectedIncident.origin.backward_particles).map((p: any) => [p[1], p[0]])} 
-                        color="#c77dff" weight={2} opacity={0.6} dashArray="4,4"
-                      />
+                {/* Suspects Column */}
+                <div className="glass-panel" style={{ flex: 1, padding: '20px', display: 'flex', flexDirection: 'column' }}>
+                  <h3 style={{ fontSize: '16px', color: 'var(--text-primary)', marginBottom: '5px' }}>Memory Rewind</h3>
+                  <p style={{ fontSize: '11px', color: 'var(--text-secondary)', marginBottom: '15px' }}>Cross-referencing historical AIS data against the Origin Zone and Release Time window.</p>
+                  
+                  <div style={{ flex: 1, overflowY: 'auto' }}>
+                    {loadingSuspects ? (
+                      <div style={{ textAlign: 'center', padding: '40px 20px' }}>
+                        <div style={{ animation: 'pulse-dot 1.5s infinite', fontSize: '24px', marginBottom: '10px' }}>⏳</div>
+                        <p style={{ fontSize: '12px', color: 'var(--cyan)' }}>Rewinding Maritime Memory...</p>
+                        <p style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Filtering candidate vessels...</p>
+                      </div>
+                    ) : suspects.length === 0 ? (
+                      <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>No candidate vessels found near the origin zone.</p>
+                    ) : (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        {suspects.map((s, idx) => (
+                          <div key={idx} style={{ 
+                            padding: '12px', 
+                            borderRadius: '8px', 
+                            background: s.priority === 'High Priority' ? 'rgba(255, 51, 102, 0.05)' : 'rgba(255, 255, 255, 0.02)',
+                            border: s.priority === 'High Priority' ? '1px solid rgba(255, 51, 102, 0.3)' : '1px solid var(--border)',
+                          }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                              <span style={{ fontSize: '13px', fontWeight: 'bold', color: 'var(--text-primary)' }}>{s.vessel_name} <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>({s.mmsi})</span></span>
+                              <span style={{ 
+                                fontSize: '10px', 
+                                fontWeight: 'bold', 
+                                padding: '2px 6px', 
+                                borderRadius: '4px',
+                                background: s.priority === 'High Priority' ? 'rgba(255, 51, 102, 0.1)' : 'rgba(255, 255, 255, 0.1)',
+                                color: s.priority === 'High Priority' ? '#ff3366' : 'var(--text-secondary)'
+                              }}>
+                                {s.priority} ({s.match_score}%)
+                              </span>
+                            </div>
+                            <ul style={{ margin: 0, paddingLeft: '15px', fontSize: '11px', color: 'var(--text-secondary)' }}>
+                              {s.reasons.map((r: string, rIdx: number) => <li key={rIdx} style={{ marginBottom: '4px' }}>{r}</li>)}
+                            </ul>
+                          </div>
+                        ))}
+                      </div>
                     )}
-
-                    {/* Origin Zone */}
-                    {selectedIncident.origin.lat && (
-                      <CircleMarker 
-                        center={[selectedIncident.origin.lat, selectedIncident.origin.lon]} 
-                        radius={20} color="#c77dff" fillColor="#c77dff" fillOpacity={0.2} weight={2}
-                      />
-                    )}
-                  </MapContainer>
+                  </div>
+                  
+                  {!loadingSuspects && suspects.length > 0 && (
+                    <button style={{
+                      marginTop: '15px', width: '100%', padding: '10px', background: 'var(--cyan)', color: '#000', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold'
+                    }}>
+                      Generate Case Report
+                    </button>
+                  )}
                 </div>
               </div>
 
