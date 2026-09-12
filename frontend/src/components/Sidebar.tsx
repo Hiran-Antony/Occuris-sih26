@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 const NAV = [
   { to: '/monitoring', icon: '🗺️', label: 'Regional Monitoring', part: 1 },
@@ -39,13 +39,26 @@ export default function Sidebar() {
           <span className="nav-icon">🛢️</span>
           Spill Investigation
         </NavLink>
-        {NAV.filter(n => n.part === 2 && n.to !== '/spill' && n.to !== '/forensics').map(item => (
-          <div key={item.to} className="nav-item disabled">
-            <span className="nav-icon">{item.icon}</span>
-            {item.label}
-            <span className="nav-badge part2">Soon</span>
-          </div>
-        ))}
+        <NavLink to="/spillsplit" className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}>
+          <span className="nav-icon">🔀</span>
+          SpillSplit
+        </NavLink>
+        <NavLink to="/drift" className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}>
+          <span className="nav-icon">🌊</span>
+          Drift Forecast
+        </NavLink>
+        <NavLink to="/investigation" className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}>
+          <span className="nav-icon">🔍</span>
+          Investigation
+        </NavLink>
+        <NavLink to="/replay" className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}>
+          <span className="nav-icon">▶️</span>
+          Vessel Replay
+        </NavLink>
+        <NavLink to="/report" className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}>
+          <span className="nav-icon">📄</span>
+          Case Report
+        </NavLink>
       </nav>
 
       <div className="sidebar-footer">

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
-import { vesselApi, dashboardApi, journeyApi } from '../api/client';
+import { vesselApi, dashboardApi } from '../api/client';
 import type { Vessel, BehaviourEvent, TimelineEvent, DashboardStats } from '../types';
-import { VESSEL_TYPE_COLORS, SEVERITY_COLORS } from '../types';
 
 function formatDuration(h: number | null) {
   if (h == null) return '—';
@@ -190,8 +189,8 @@ export default function MaritimeMemory() {
       </div>
 
       {/* Table + Timeline */}
-      <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
-        <div className="table-wrapper" style={{ flex: 1 }}>
+      <div style={{ flex: 1, display: 'flex', overflow: 'hidden', minHeight: 0, position: 'relative' }}>
+        <div className="table-wrapper" style={{ flex: 1, overflowY: 'auto', overflowX: 'auto', height: '100%', position: 'relative' }}>
           <table className="data-table">
             <thead>
               <tr>

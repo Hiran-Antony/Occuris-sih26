@@ -31,7 +31,18 @@ def get_db():
 
 
 def init_db():
-    """Create all tables."""
-    from app.models import Vessel, AISPosition, GatewayCrossing, Journey, BehaviourEvent  # noqa
+    """Create all tables and seed demo data."""
+    from app.models import (
+        Gateway, Vessel, AISPosition, GatewayCrossing,  # noqa
+        Journey, BehaviourEvent, SpillIncident,          # noqa
+    )
     Base.metadata.create_all(bind=engine)
     print("[OK] Database tables created.")
+
+    # Seed the four demo gateways if not already present
+    from app.services.gateway_seed import seed_gateways
+    db = SessionLocal()
+    try:
+        seed_gateways(db)
+    finally:
+        db.close()
