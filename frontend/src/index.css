@@ -175,6 +175,7 @@ html, body, #root {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 /* ── Page Header ────────────────────────────────────────────────────────── */
@@ -199,6 +200,12 @@ html, body, #root {
   background: var(--bg-secondary);
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
+  overflow-x: auto;
+  scrollbar-width: none; /* Firefox */
+}
+
+.stats-bar::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
 }
 
 .stat-card {
@@ -532,3 +539,84 @@ html, body, #root {
 
 /* ── Vessel speed chart ─────────────────────────────────────────────────── */
 .speed-chart-wrapper { padding: 12px 0; }
+
+/* ── Data Table Styling (Maritime Memory & Registry) ────────────────────── */
+.table-wrapper {
+  overflow: auto;
+  flex: 1;
+  background: var(--bg-card);
+  position: relative;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: left;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.data-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+.data-table th {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  padding: 14px 16px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--cyan);
+  background: #071324 !important;
+  border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+  white-space: nowrap;
+  vertical-align: middle;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
+}
+
+.data-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  vertical-align: middle;
+  white-space: nowrap;
+  background: transparent;
+}
+
+.data-table tbody tr {
+  transition: background 0.15s ease;
+  cursor: pointer;
+}
+
+.data-table tbody tr:hover {
+  background: rgba(0, 212, 255, 0.06);
+}
+
+.data-table tbody tr.selected {
+  background: rgba(0, 212, 255, 0.12);
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-type-tanker { background: rgba(255, 51, 102, 0.15); color: var(--red); border: 1px solid rgba(255, 51, 102, 0.3); }
+.badge-type-cargo { background: rgba(0, 212, 255, 0.15); color: var(--cyan); border: 1px solid rgba(0, 212, 255, 0.3); }
+.badge-type-fishing { background: rgba(0, 255, 136, 0.15); color: var(--green); border: 1px solid rgba(0, 255, 136, 0.3); }
+.badge-type-passenger { background: rgba(255, 184, 0, 0.15); color: var(--amber); border: 1px solid rgba(255, 184, 0, 0.3); }
+
+.badge-status-completed { background: rgba(0, 255, 136, 0.15); color: var(--green); }
+.badge-status-in_progress { background: rgba(0, 212, 255, 0.15); color: var(--cyan); }
+.badge-status-delayed { background: rgba(255, 184, 0, 0.15); color: var(--amber); }
+

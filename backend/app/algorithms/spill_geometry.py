@@ -28,15 +28,17 @@ def calculate_geometry(mask_array: np.ndarray, base_lat=13.15, base_lon=86.20, k
     # Get the largest contour (assuming it's the main spill body)
     main_contour = max(contours, key=cv2.contourArea)
     
+    # Total slick footprint from all positive mask pixels
+    total_area_px = int(mask_array.sum())
     area_px = cv2.contourArea(main_contour)
     perimeter_px = cv2.arcLength(main_contour, True)
     
     # Bounding rotated rectangle for length/width/orientation
     rect = cv2.minAreaRect(main_contour)
     (cx_px, cy_px), (w_px, h_px), angle = rect
-    
+
     # Convert pixels to physical units
-    area_km2 = area_px * (km_per_pixel ** 2)
+    area_km2 = total_area_px * (km_per_pixel ** 2)
     perimeter_km = perimeter_px * km_per_pixel
     length_km = max(w_px, h_px) * km_per_pixel
     width_km = min(w_px, h_px) * km_per_pixel

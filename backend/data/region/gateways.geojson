@@ -4,64 +4,88 @@
     {
       "type": "Feature",
       "properties": {
-        "id": "A",
-        "name": "Gateway Alpha — Western Boundary",
+        "id": "gate_a",
+        "name": "Gateway Alpha \u2014 Western Boundary",
         "color": "#00ff88",
-        "description": "Western entry/exit — 80°E meridian"
+        "description": "Western oceanic boundary \u2014 84.0\u00b0E"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [80.0, 5.0],
-          [80.0, 22.0]
+          [
+            84.0,
+            6.0
+          ],
+          [
+            84.0,
+            19.5
+          ]
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "id": "B",
-        "name": "Gateway Bravo — Northern Boundary",
+        "id": "gate_b",
+        "name": "Gateway Bravo \u2014 Northern Boundary",
         "color": "#00d4ff",
-        "description": "Northern entry/exit — 22°N parallel"
+        "description": "Northern oceanic boundary \u2014 19.5\u00b0N"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [80.0, 22.0],
-          [100.0, 22.0]
+          [
+            84.0,
+            19.5
+          ],
+          [
+            93.5,
+            19.5
+          ]
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "id": "C",
-        "name": "Gateway Charlie — Southern Boundary",
+        "id": "gate_c",
+        "name": "Gateway Charlie \u2014 Southern Boundary",
         "color": "#ffb800",
-        "description": "Southern entry/exit — 5°N parallel"
+        "description": "Southern oceanic boundary \u2014 6.0\u00b0N"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [80.0, 5.0],
-          [100.0, 5.0]
+          [
+            84.0,
+            6.0
+          ],
+          [
+            93.5,
+            6.0
+          ]
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "id": "D",
-        "name": "Gateway Delta — Eastern Boundary",
+        "id": "gate_d",
+        "name": "Gateway Delta \u2014 Eastern Boundary",
         "color": "#ff6b35",
-        "description": "Eastern entry/exit — 100°E meridian"
+        "description": "Eastern oceanic boundary \u2014 93.5\u00b0E"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [100.0, 5.0],
-          [100.0, 22.0]
+          [
+            93.5,
+            6.0
+          ],
+          [
+            93.5,
+            19.5
+          ]
         ]
       }
     }

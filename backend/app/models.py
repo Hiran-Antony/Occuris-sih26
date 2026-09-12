@@ -1,5 +1,5 @@
 """
-Occuris SQLAlchemy Models — All database tables for Part 1 & 2
+Occuris SQLAlchemy Models — All database tables for Part 1, 2 & Gateway Module
 """
 from datetime import datetime
 from sqlalchemy import (
@@ -8,6 +8,34 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 from app.database import Base
+
+
+class Gateway(Base):
+    """
+    Virtual gateway — a named LineString boundary on the map.
+    Geometry is stored as a GeoJSON LineString JSON string.
+    IDs: gate_a, gate_b, gate_c, gate_d (DEMO).
+    """
+    __tablename__ = "gateways"
+
+    id          = Column(String(20), primary_key=True)   # e.g. "gate_a"
+    name        = Column(String(100), nullable=False)
+    color       = Column(String(10),  default="#00ff88")
+    description = Column(String(300), nullable=True)
+    geometry    = Column(Text, nullable=False)            # GeoJSON LineString (JSON)
+
+    def to_geojson_feature(self):
+        import json
+        return {
+            "type": "Feature",
+            "properties": {
+                "id":          self.id,
+                "name":        self.name,
+                "color":       self.color,
+                "description": self.description,
+            },
+            "geometry": json.loads(self.geometry),
+        }
 
 
 class SpillIncident(Base):
@@ -75,11 +103,11 @@ class SpillIncident(Base):
             "geometry": {
                 "centroid_lat": self.centroid_lat,
                 "centroid_lon": self.centroid_lon,
-                "area_km2": round(self.area_km2, 2) if self.area_km2 else None,
-                "length_km": round(self.length_km, 2) if self.length_km else None,
-                "width_km": round(self.width_km, 2) if self.width_km else None,
-                "orientation_deg": round(self.orientation_deg, 1) if self.orientation_deg else None,
-                "pixel_count": self.pixel_count,
+                "area_km2": round(self.area_km2, 2) if self.area_km2 is not None else 0.0,
+                "length_km": round(self.length_km, 2) if self.length_km is not None else 0.0,
+                "width_km": round(self.width_km, 2) if self.width_km is not None else 0.0,
+                "orientation_deg": round(self.orientation_deg, 1) if self.orientation_deg is not None else 0.0,
+                "pixel_count": self.pixel_count or 0,
             },
             "origin": {
                 "lat": self.origin_lat,

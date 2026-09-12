@@ -4,19 +4,33 @@
     {
       "type": "Feature",
       "properties": {
-        "id": "BOB_DEMO",
-        "name": "Bay of Bengal Prototype Monitoring Region",
-        "description": "Occuris SIH 2026 demo monitoring polygon"
+        "name": "Bay of Bengal \u2014 Oceanic Operational Sector",
+        "description": "Continuous international maritime corridor between 84.0\u00b0E - 93.5\u00b0E and 6.0\u00b0N - 19.5\u00b0N"
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
-            [80.0, 5.0],
-            [100.0, 5.0],
-            [100.0, 22.0],
-            [80.0, 22.0],
-            [80.0, 5.0]
+            [
+              84.0,
+              6.0
+            ],
+            [
+              93.5,
+              6.0
+            ],
+            [
+              93.5,
+              19.5
+            ],
+            [
+              84.0,
+              19.5
+            ],
+            [
+              84.0,
+              6.0
+            ]
           ]
         ]
       }

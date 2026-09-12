@@ -35,7 +35,10 @@ yarn-error.log*
 
 # Occuris Specific Data
 # Ignore generated DBs and huge model weights to save repo space
+*.db
 backend/occuris.db
+backend/data/occuris.db
 backend/data/models/*.pth
 backend/data/sar/*.tif
 backend/data/masks/*.png
+
