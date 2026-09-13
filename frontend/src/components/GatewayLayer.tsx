@@ -58,9 +58,10 @@ export default function GatewayLayer() {
             positions={positions}
             pathOptions={{
               color:     gw.properties.color,
-              weight:    3,
+              weight:    4,
               opacity:   0.85,
-              dashArray: '8 4',
+              dashArray: '4 8',
+              lineCap: 'round',
             }}
           >
             <Tooltip sticky>

@@ -230,68 +230,6 @@ def route_nautical(start_pt, end_pt, spd):
 def make_all_vessels():
     records = []
 
-    # ─── PRIMARY SUSPECT (HIGH PRIORITY) ────────────────────────────────────
-    # MMSI 419000042 — MT DESH SHOBHA (Crude Tanker, SCI, Flag: IN)
-    # Enters Gate A, slows down, releases oil at 13.16°N, 86.19°E, AIS gap 12:30-14:45.
-    # Exits Gate D through Ten Degree Channel (10.0°N) — ZERO LAND INTERSECTION.
-    records += make_trajectory(
-        mmsi="419000042", vessel_type="tanker",
-        vessel_name="MT DESH SHOBHA", flag="IN",
-        entry_gw="A", exit_gw="D",
-        entry_time=datetime(2024, 1, 15, 6, 30, 0),
-        waypoints=[
-            (13.25, 84.0, 10.0),   # Gate A entry (open sea 84.0°E)
-            (13.22, 84.8, 10.0),   # Eastward transit
-            (13.20, 85.4, 6.0),    # Slowdown begins
-            (13.18, 85.8, 4.5),    # Continued slowdown
-            (13.16, 86.19, 9.5),   # EXACT OVER DETECTED OIL SPILL ZONE → AIS GAP STARTS 12:30
-            # ← AIS GAP 12:30 – 14:45 (discharge window) ←
-            (12.80, 88.0, 9.5),    # AIS RESUMES past origin zone
-            (11.80, 89.8, 10.5),   # Route turn southeast toward Ten Degree Channel fairway
-            (10.50, 91.2, 10.5),   # Approaches Ten Degree Channel fairway (west of Little Andaman)
-            (10.00, 92.0, 10.5),   # Enters Ten Degree Channel (150 km wide open deep sea)
-            (10.00, 92.8, 10.5),   # Transiting Ten Degree Channel safely south of Little Andaman
-            (10.00, 93.5, 10.0),   # Gate D exit into Andaman Sea
-        ],
-        gap_windows=[
-            (datetime(2024, 1, 15, 12, 30, 0), datetime(2024, 1, 15, 14, 45, 0)),
-        ],
-    )
-
-    # ─── SECONDARY CANDIDATE (MEDIUM PRIORITY) ──────────────────────────────
-    # MMSI 419000040 — EASTERN STAR (Cargo), bilge dumping filament in Ten Degree Channel (10.13°N, 92.64°E)
-    records += make_trajectory(
-        mmsi="419000040", vessel_type="cargo",
-        vessel_name="EASTERN STAR", flag="SG",
-        entry_gw="A", exit_gw="D",
-        entry_time=datetime(2024, 1, 15, 0, 30, 0),
-        waypoints=[
-            (10.28, 89.20, 11.5),
-            (10.22, 90.50, 11.5),
-            (10.18, 91.80, 10.5),
-            (10.13, 92.64, 8.5),   # REACHES TEN DEGREE CHOKEPOINT AT ~18:40 UTC S1 DETECTION
-            (10.05, 93.30, 11.5),
-            (10.00, 94.00, 11.5),  # Gate D exit into Andaman Sea (strictly south of Little Andaman)
-        ],
-    )
-
-    # ─── THIRD CANDIDATE (LOW PRIORITY) ─────────────────────────────────────
-    # MMSI 419000041 — GULF WAVE (Tanker), produced water / rig washing in KG Basin (16.45°N, 84.45°E)
-    records += make_trajectory(
-        mmsi="419000041", vessel_type="tanker",
-        vessel_name="GULF WAVE", flag="MY",
-        entry_gw="B", exit_gw="A",
-        entry_time=datetime(2024, 1, 15, 8, 45, 0),
-        waypoints=[
-            (17.80, 85.20, 10.0),
-            (17.30, 84.90, 10.0),
-            (16.85, 84.65, 8.5),
-            (16.45, 84.45, 6.0),   # REACHES KG BASIN OFFSHORE SHELF AT ~18:40 UTC S1 DETECTION
-            (16.00, 84.35, 10.0),
-            (15.20, 84.20, 10.0),  # Gate A southward exit inside surveillance basin
-        ],
-    )
-
     # ─── VESSELS WITH WEATHER-EXPLAINED SLOWDOWNS ───────────────────────────
     records += make_trajectory(
         mmsi="419000036", vessel_type="tanker",

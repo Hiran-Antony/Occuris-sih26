@@ -99,11 +99,6 @@ def seed():
         print(f"\n[!] Behaviour Events: {events} ({unexplained} unexplained)")
 
         print("\n[OK] Seeding complete -- Occuris is ready for the demo!")
-        print("\nKey vessels to check:")
-        print("  MMSI 419000042 --- Primary suspect (tanker with AIS gap near origin)")
-        print("  MMSI 419000040 --- Secondary (cargo with unexplained route deviation)")
-        print("  MMSI 419000041 --- Tertiary (tanker, weather explains slowdown)")
-
     except Exception as e:
         db.rollback()
         print(f"\n[ERROR]: {e}")

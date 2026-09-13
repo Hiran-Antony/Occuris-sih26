@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { MapContainer, TileLayer, Polygon, Polyline, CircleMarker, Popup, useMap, ImageOverlay, Rectangle } from 'react-leaflet';
+import { MapContainer, TileLayer, Polygon, Polyline, CircleMarker, Marker, Popup, useMap, ImageOverlay, Rectangle } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
 
 import { regionApi, vesselApi, dashboardApi, forensicsApi } from '../api/client';
 import type { Vessel, AISPosition, DashboardStats, GatewayId } from '../types';
@@ -357,7 +358,7 @@ export default function RegionalMonitoring() {
           <MapContainer
             center={[13.0, 88.5]}
             zoom={6}
-            style={{ width: '100%', height: '100%', background: '#020c18' }}
+            style={{ width: '100%', height: '100%', background: 'rgba(0, 0, 0, 0.25)' }}
             zoomControl={false}
           >
             {mapLayer === 'sentinel' && (
@@ -412,7 +413,7 @@ export default function RegionalMonitoring() {
               <Polyline
                 key={gw.properties.id}
                 positions={gw.geometry.coordinates.map(([lon, lat]) => [lat, lon] as [number, number])}
-                pathOptions={{ color: gw.properties.color, weight: 4, opacity: 0.9 }}
+                pathOptions={{ color: gw.properties.color, weight: 2, opacity: 0.9, dashArray: '6 8', lineCap: 'round' }}
               />
             ))}
 
@@ -546,7 +547,7 @@ export default function RegionalMonitoring() {
                         </div>
                         
                         {/* Real SAR & Mask Preview side by side */}
-                        <div style={{ display: 'flex', gap: 6, margin: '8px 0', background: '#020c18', padding: 4, borderRadius: 6, border: '1px solid var(--border)' }}>
+                        <div style={{ display: 'flex', gap: 6, margin: '8px 0', background: 'rgba(0, 0, 0, 0.25)', padding: 4, borderRadius: 6, border: '1px solid var(--border)' }}>
                           <div style={{ flex: 1, textAlign: 'center' }}>
                             <div style={{ fontSize: 9, color: 'var(--text-muted)', marginBottom: 2 }}>RAW SENTINEL SAR</div>
                             {sarFilename && (
@@ -691,15 +692,14 @@ export default function RegionalMonitoring() {
                     />
                   )}
                   {/* Current position marker */}
-                  <CircleMarker
-                    center={[current.latitude, current.longitude]}
-                    radius={isSuspect ? 7 : 4.5}
-                    pathOptions={{
-                      color: isSuspect ? '#ffffff' : color,
-                      fillColor: isSuspect ? suspectColor : color,
-                      fillOpacity: 0.95,
-                      weight: isSuspect ? 2 : 1,
-                    }}
+                  <Marker
+                    position={[current.latitude, current.longitude]}
+                    icon={L.divIcon({
+                      html: `<div style="font-size: 14px; line-height: 14px; text-align: center;">🚢</div>`,
+                      className: 'ship-emoji-icon',
+                      iconSize: [14, 14],
+                      iconAnchor: [7, 7]
+                    })}
                   >
                     <Popup>
                       <div className="vessel-popup" style={{ minWidth: 230 }}>
@@ -720,7 +720,7 @@ export default function RegionalMonitoring() {
                         <div className="vessel-popup-row"><span>Status</span><span>{current.nav_status || 'underway'}</span></div>
                       </div>
                     </Popup>
-                  </CircleMarker>
+                  </Marker>
                 </div>
               );
             })}
@@ -728,7 +728,7 @@ export default function RegionalMonitoring() {
 
           {/* Map Layer Switcher (Top-Right Floating Overlay) */}
           <div style={{ position: 'absolute', top: 14, right: 14, zIndex: 1000 }}>
-            <div className="glass-panel" style={{ padding: '4px 6px', display: 'flex', gap: 4, background: 'rgba(2, 12, 24, 0.85)', backdropFilter: 'blur(10px)', border: '1px solid rgba(0, 212, 255, 0.25)' }}>
+            <div className="glass-panel" style={{ padding: '4px 6px', display: 'flex', gap: 4, background: 'var(--bg-card)', backdropFilter: 'blur(10px)', border: '1px solid rgba(0, 212, 255, 0.25)' }}>
               <button
                 onClick={() => setMapLayer('sentinel')}
                 style={{
@@ -841,7 +841,7 @@ export default function RegionalMonitoring() {
         </div>
 
         {/* Live Event Feed */}
-        <div style={{ width: 280, minWidth: 280, flexShrink: 0, borderLeft: '1px solid var(--border)', display: 'flex', flexDirection: 'column', background: 'var(--bg-secondary)', overflow: 'hidden' }}>
+        <div style={{ width: 280, minWidth: 280, flexShrink: 0, borderLeft: '1px solid var(--border)', display: 'flex', flexDirection: 'column', background: 'var(--bg-card)', backdropFilter: 'blur(16px)', overflow: 'hidden' }}>
           <div className="panel-header" style={{ padding: '14px 16px', borderBottom: '1px solid var(--border)' }}>
             <div className="live-indicator" />
             <span className="panel-title">Gateway Crossings</span>
